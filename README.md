@@ -1,5 +1,5 @@
 # OmniNewsAPI
-
+Coming Soon
 OmniNewsAPI is a unified news-fetching service that consolidates multiple news APIs into a **single, standardized format**. Instead of handling many different response shapes, you query OmniNewsAPI and always get back the same predictable structure.
 
 ---
