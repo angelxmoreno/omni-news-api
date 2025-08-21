@@ -6,15 +6,16 @@ pre-commit:
       skip:
         - merge
         - rebase
-      files: git diff --name-only HEAD
+      files: echo {staged_files}
     types:
       run: bun run typecheck
       skip:
         - merge
         - rebase
-      files: git diff --name-only HEAD
+      files: echo {staged_files}
 commit-msg:
   parallel: true
   commands:
     commitlint:
       run: bunx commitlint --edit $1
+
