@@ -2,7 +2,7 @@ import type Keyv from '@keyvhq/core';
 import axios, { type AxiosInstance, type CreateAxiosDefaults } from 'axios';
 import { setupCache } from 'axios-cache-interceptor';
 import { addAxiosDateTransformer } from 'axios-date-transformer';
-import { createKeyvStorage } from './createKeyvStorage.ts';
+import { createKeyvStorage } from './createKeyvStorage';
 
 export interface CreateHttpClientOptions {
     config?: CreateAxiosDefaults;

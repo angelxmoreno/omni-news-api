@@ -1,4 +1,4 @@
-import type { NewsArticleInterface } from './NewsArticleInterface.ts';
+import type { NewsArticleInterface } from './NewsArticleInterface';
 
 export interface AdapterInterface {
     getArticles(): Promise<NewsArticleInterface[]>;

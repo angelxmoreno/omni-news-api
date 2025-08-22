@@ -1,7 +1,7 @@
 import type { AxiosInstance } from 'axios';
-import type { AdapterInterface } from '../core/AdapterInterface.ts';
-import type { NewsArticleInterface } from '../core/NewsArticleInterface.ts';
-import { parseRssXmlString } from '../utils/parseRssXmlString.ts';
+import type { AdapterInterface } from '../core/AdapterInterface';
+import type { NewsArticleInterface } from '../core/NewsArticleInterface';
+import { parseRssXmlString } from '../utils/parseRssXmlString';
 
 export type RssAdapterOptions = {
     rssUrl: string;

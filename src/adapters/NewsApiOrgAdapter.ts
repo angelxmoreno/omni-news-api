@@ -1,6 +1,6 @@
 import type { AxiosInstance } from 'axios';
-import type { AdapterInterface } from '../core/AdapterInterface.ts';
-import type { NewsArticleInterface } from '../core/NewsArticleInterface.ts';
+import type { AdapterInterface } from '../core/AdapterInterface';
+import type { NewsArticleInterface } from '../core/NewsArticleInterface';
 
 export interface NewsApiOrgSearchParams {
     q?: string;

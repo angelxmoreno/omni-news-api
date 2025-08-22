@@ -1,5 +1,5 @@
-import type { AdapterInterface } from './AdapterInterface.ts';
-import type { NewsArticleInterface } from './NewsArticleInterface.ts';
+import type { AdapterInterface } from './AdapterInterface';
+import type { NewsArticleInterface } from './NewsArticleInterface';
 
 export class Aggregator {
     protected adapters: AdapterInterface[];
