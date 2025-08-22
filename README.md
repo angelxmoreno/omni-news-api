@@ -72,7 +72,9 @@ const articles = await newsApiAdapter.getArticles();
 
 ```ts
 import { Aggregator, RssAdapter, NewsApiOrgAdapter, createCacheableHttpClient } from 'omni-news-api';
+import Keyv from '@keyvhq/core';
 
+const keyv = new Keyv('redis://localhost:6379');
 const httpClient = createCacheableHttpClient({ keyv, defaultMsTtl: 300000 });
 
 const aggregator = new Aggregator([
