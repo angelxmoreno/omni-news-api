@@ -113,7 +113,7 @@ describe('createKeyvStorage', () => {
         expect((await storage.get('key2')).state).toBe('cached');
 
         // Clear all
-        await storage.clear();
+        await storage.clear?.();
 
         // Verify they're gone
         expect(await storage.get('key1')).toEqual({ state: 'empty' });
