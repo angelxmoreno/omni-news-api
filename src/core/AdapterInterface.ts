@@ -1,5 +1,6 @@
-import type { NewsArticleInterface } from './NewsArticleInterface';
+import type { AdapterSearchOptions } from './AdapterSearchOptions';
+import type { NewsArticleResponse } from './NewsArticleResponse';
 
 export interface AdapterInterface {
-    getArticles(): Promise<NewsArticleInterface[]>;
+    getArticles(options?: AdapterSearchOptions): Promise<NewsArticleResponse>;
 }

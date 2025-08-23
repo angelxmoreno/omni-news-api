@@ -2,6 +2,7 @@ import { describe, expect, it, jest } from 'bun:test';
 import type { AdapterInterface } from '../../src/core/AdapterInterface';
 import { Aggregator } from '../../src/core/Aggregator';
 import type { NewsArticleInterface } from '../../src/core/NewsArticleInterface';
+import type { NewsArticleResponse } from '../../src/core/NewsArticleResponse';
 
 describe('Aggregator', () => {
     const mockArticle1: NewsArticleInterface = {
@@ -45,56 +46,84 @@ describe('Aggregator', () => {
     });
 
     it('fetches articles from single adapter', async () => {
+        const mockResponse: NewsArticleResponse = {
+            articles: [mockArticle1, mockArticle2],
+            totalCount: 2,
+            hasMore: false,
+        };
         const mockAdapter: AdapterInterface = {
-            getArticles: jest.fn().mockResolvedValue([mockArticle1, mockArticle2]),
+            getArticles: jest.fn().mockResolvedValue(mockResponse),
         };
 
         const aggregator = new Aggregator([mockAdapter]);
-        const articles = await aggregator.fetchAll();
+        const result = await aggregator.fetchAll();
 
         expect(mockAdapter.getArticles).toHaveBeenCalledTimes(1);
-        expect(articles).toHaveLength(2);
-        expect(articles).toEqual([mockArticle1, mockArticle2]);
+        expect(result.articles).toHaveLength(2);
+        expect(result.articles).toEqual([mockArticle1, mockArticle2]);
+        expect(result.totalCount).toBe(2);
+        expect(result.hasMore).toBe(false);
     });
 
     it('fetches and combines articles from multiple adapters', async () => {
+        const mockResponse1: NewsArticleResponse = {
+            articles: [mockArticle1],
+            totalCount: 1,
+            hasMore: false,
+        };
+        const mockResponse2: NewsArticleResponse = {
+            articles: [mockArticle2, mockArticle3],
+            totalCount: 2,
+            hasMore: true,
+        };
         const mockAdapter1: AdapterInterface = {
-            getArticles: jest.fn().mockResolvedValue([mockArticle1]),
+            getArticles: jest.fn().mockResolvedValue(mockResponse1),
         };
         const mockAdapter2: AdapterInterface = {
-            getArticles: jest.fn().mockResolvedValue([mockArticle2, mockArticle3]),
+            getArticles: jest.fn().mockResolvedValue(mockResponse2),
         };
 
         const aggregator = new Aggregator([mockAdapter1, mockAdapter2]);
-        const articles = await aggregator.fetchAll();
+        const result = await aggregator.fetchAll();
 
         expect(mockAdapter1.getArticles).toHaveBeenCalledTimes(1);
         expect(mockAdapter2.getArticles).toHaveBeenCalledTimes(1);
-        expect(articles).toHaveLength(3);
-        expect(articles).toEqual([mockArticle1, mockArticle2, mockArticle3]);
+        expect(result.articles).toHaveLength(3);
+        expect(result.articles).toEqual([mockArticle1, mockArticle2, mockArticle3]);
+        expect(result.totalCount).toBe(3);
+        expect(result.hasMore).toBe(true);
     });
 
-    it('returns empty array when no adapters provided', async () => {
+    it('returns empty response when no adapters provided', async () => {
         const aggregator = new Aggregator([]);
-        const articles = await aggregator.fetchAll();
+        const result = await aggregator.fetchAll();
 
-        expect(articles).toHaveLength(0);
-        expect(articles).toEqual([]);
+        expect(result.articles).toHaveLength(0);
+        expect(result.articles).toEqual([]);
+        expect(result.totalCount).toBe(0);
+        expect(result.hasMore).toBe(false);
     });
 
-    it('returns empty array when all adapters return empty arrays', async () => {
+    it('returns empty response when all adapters return empty responses', async () => {
+        const emptyResponse: NewsArticleResponse = {
+            articles: [],
+            totalCount: 0,
+            hasMore: false,
+        };
         const mockAdapter1: AdapterInterface = {
-            getArticles: jest.fn().mockResolvedValue([]),
+            getArticles: jest.fn().mockResolvedValue(emptyResponse),
         };
         const mockAdapter2: AdapterInterface = {
-            getArticles: jest.fn().mockResolvedValue([]),
+            getArticles: jest.fn().mockResolvedValue(emptyResponse),
         };
 
         const aggregator = new Aggregator([mockAdapter1, mockAdapter2]);
-        const articles = await aggregator.fetchAll();
+        const result = await aggregator.fetchAll();
 
-        expect(articles).toHaveLength(0);
-        expect(articles).toEqual([]);
+        expect(result.articles).toHaveLength(0);
+        expect(result.articles).toEqual([]);
+        expect(result.totalCount).toBe(0);
+        expect(result.hasMore).toBe(false);
     });
 
     it('executes adapter calls in parallel', async () => {
@@ -103,30 +132,35 @@ describe('Aggregator', () => {
         const mockAdapter1: AdapterInterface = {
             getArticles: jest.fn().mockImplementation(async () => {
                 await delay(50);
-                return [mockArticle1];
+                return { articles: [mockArticle1], totalCount: 1, hasMore: false };
             }),
         };
         const mockAdapter2: AdapterInterface = {
             getArticles: jest.fn().mockImplementation(async () => {
                 await delay(50);
-                return [mockArticle2];
+                return { articles: [mockArticle2], totalCount: 1, hasMore: false };
             }),
         };
 
         const aggregator = new Aggregator([mockAdapter1, mockAdapter2]);
 
         const startTime = Date.now();
-        const articles = await aggregator.fetchAll();
+        const result = await aggregator.fetchAll();
         const endTime = Date.now();
 
         // Should complete in around 50ms (parallel) not 100ms (sequential)
         expect(endTime - startTime).toBeLessThan(90);
-        expect(articles).toHaveLength(2);
+        expect(result.articles).toHaveLength(2);
     });
 
     it('handles adapter errors by propagating them', async () => {
+        const mockResponse: NewsArticleResponse = {
+            articles: [mockArticle1],
+            totalCount: 1,
+            hasMore: false,
+        };
         const mockAdapter1: AdapterInterface = {
-            getArticles: jest.fn().mockResolvedValue([mockArticle1]),
+            getArticles: jest.fn().mockResolvedValue(mockResponse),
         };
         const mockAdapter2: AdapterInterface = {
             getArticles: jest.fn().mockRejectedValue(new Error('Adapter 2 failed')),
@@ -138,19 +172,29 @@ describe('Aggregator', () => {
     });
 
     it('maintains order of articles as returned by adapters', async () => {
+        const mockResponse1: NewsArticleResponse = {
+            articles: [mockArticle1, mockArticle2],
+            totalCount: 2,
+            hasMore: false,
+        };
+        const mockResponse2: NewsArticleResponse = {
+            articles: [mockArticle3],
+            totalCount: 1,
+            hasMore: false,
+        };
         const mockAdapter1: AdapterInterface = {
-            getArticles: jest.fn().mockResolvedValue([mockArticle1, mockArticle2]),
+            getArticles: jest.fn().mockResolvedValue(mockResponse1),
         };
         const mockAdapter2: AdapterInterface = {
-            getArticles: jest.fn().mockResolvedValue([mockArticle3]),
+            getArticles: jest.fn().mockResolvedValue(mockResponse2),
         };
 
         const aggregator = new Aggregator([mockAdapter1, mockAdapter2]);
-        const articles = await aggregator.fetchAll();
+        const result = await aggregator.fetchAll();
 
         // Should maintain order: adapter1's articles first, then adapter2's
-        expect(articles[0]).toEqual(mockArticle1);
-        expect(articles[1]).toEqual(mockArticle2);
-        expect(articles[2]).toEqual(mockArticle3);
+        expect(result.articles[0]).toEqual(mockArticle1);
+        expect(result.articles[1]).toEqual(mockArticle2);
+        expect(result.articles[2]).toEqual(mockArticle3);
     });
 });

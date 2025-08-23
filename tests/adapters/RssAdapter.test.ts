@@ -41,9 +41,11 @@ describe('RssAdapter', () => {
             httpClient,
         });
 
-        const data = await adapter.getArticles();
-        expect(data.length).toBe(2);
-        expect(data[0]?.title).toBe('Cats take over city');
-        expect(data[1]?.title).toBe('Dogs run for mayor');
+        const result = await adapter.getArticles();
+        expect(result.articles.length).toBe(2);
+        expect(result.articles[0]?.title).toBe('Cats take over city');
+        expect(result.articles[1]?.title).toBe('Dogs run for mayor');
+        expect(result.totalCount).toBe(2);
+        expect(result.hasMore).toBe(false);
     });
 });
