@@ -28,6 +28,8 @@ describe('NewsApiOrgAdapter', () => {
                     author: 'John Doe',
                     source: { name: 'Tech News' },
                     publishedAt: '2025-08-22T10:00:00Z',
+                    description: 'AI is revolutionizing everything',
+                    urlToImage: 'https://example.com/ai-image.jpg',
                 },
                 {
                     title: 'Market Update',
@@ -35,6 +37,8 @@ describe('NewsApiOrgAdapter', () => {
                     author: null,
                     source: { name: 'Financial Times' },
                     publishedAt: '2025-08-22T09:00:00Z',
+                    description: 'Market analysis for today',
+                    urlToImage: 'https://example.com/market-image.jpg',
                 },
             ],
         };
@@ -44,25 +48,33 @@ describe('NewsApiOrgAdapter', () => {
         const adapter = new NewsApiOrgAdapter({
             apiKey,
             httpClient,
-            searchParams: { q: 'technology' },
+            searchParams: { q: 'technology', language: 'en' },
         });
 
-        const articles = await adapter.getArticles();
+        const result = await adapter.getArticles();
 
-        expect(articles).toHaveLength(2);
-        expect(articles[0]).toEqual({
+        expect(result.articles).toHaveLength(2);
+        expect(result.totalCount).toBe(2);
+        expect(result.hasMore).toBe(false);
+        expect(result.articles[0]).toEqual({
             title: 'Breaking News: AI Revolution',
             url: 'https://example.com/ai-news',
             author: 'John Doe',
             source: 'Tech News',
             publishedAt: new Date('2025-08-22T10:00:00Z'),
+            description: 'AI is revolutionizing everything',
+            imageUrl: 'https://example.com/ai-image.jpg',
+            language: 'en',
         });
-        expect(articles[1]).toEqual({
+        expect(result.articles[1]).toEqual({
             title: 'Market Update',
             url: 'https://example.com/market',
             author: undefined,
             source: 'Financial Times',
             publishedAt: new Date('2025-08-22T09:00:00Z'),
+            description: 'Market analysis for today',
+            imageUrl: 'https://example.com/market-image.jpg',
+            language: 'en',
         });
     });
 
@@ -110,8 +122,10 @@ describe('NewsApiOrgAdapter', () => {
             httpClient,
         });
 
-        const articles = await adapter.getArticles();
+        const result = await adapter.getArticles();
 
-        expect(articles).toHaveLength(0);
+        expect(result.articles).toHaveLength(0);
+        expect(result.totalCount).toBe(0);
+        expect(result.hasMore).toBe(false);
     });
 });

@@ -4,4 +4,8 @@ export interface NewsArticleInterface {
     author?: string;
     source?: string;
     publishedAt?: Date;
+    description?: string;
+    imageUrl?: string;
+    category?: string;
+    language?: string;
 }

@@ -6,6 +6,15 @@ const RssItemSchema = z.object({
     title: z.string(),
     link: z.string(),
     pubDate: z.string().optional(),
+    description: z.string().optional(),
+    author: z.string().optional(),
+    category: z.string().optional(),
+    enclosure: z
+        .object({
+            url: z.string(),
+            type: z.string().optional(),
+        })
+        .optional(),
 });
 
 const RssChannelSchema = z.object({
