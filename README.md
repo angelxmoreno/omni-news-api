@@ -110,10 +110,18 @@ Configure Keyv storage behavior with `keyvStorageOptions`:
 const httpClient = createCacheableHttpClient({
     keyv: new Keyv('redis://localhost:6379'),
     keyvStorageOptions: {
-        debug: true // Enable debug logging for cache operations
+        debug: true // Optional: Enable debug logging for cache storage operations
     },
     cacheOptions: {
         ttl: 300000 // Cache TTL (5 minutes)
+    }
+});
+
+// keyvStorageOptions is optional - can be omitted for default behavior
+const httpClientWithDefaults = createCacheableHttpClient({
+    keyv: new Keyv('redis://localhost:6379'),
+    cacheOptions: {
+        ttl: 300000
     }
 });
 ```
