@@ -1,6 +1,6 @@
 // tests/xml2json.test.ts
 import { describe, expect, it } from 'bun:test';
-import { xml2json } from '../../src/utils/xml2json';
+import { xml2json } from '../../../src/utils/xml2json';
 
 describe('xml2json util', () => {
     it('parses a simple XML string into an object', () => {

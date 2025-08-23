@@ -1,6 +1,6 @@
 import type { AxiosInstance } from 'axios';
-import type { AdapterInterface } from '../core/AdapterInterface';
 import type { AdapterSearchOptions } from '../core/AdapterSearchOptions';
+import { BaseAdapter } from '../core/BaseAdapter';
 import type { NewsArticleInterface } from '../core/NewsArticleInterface';
 import type { NewsArticleResponse } from '../core/NewsArticleResponse';
 
@@ -41,18 +41,19 @@ interface NewsApiResponse {
     totalResults: number;
 }
 
-export class NewsApiOrgAdapter implements AdapterInterface {
+export class NewsApiOrgAdapter extends BaseAdapter {
     protected httpClient: AxiosInstance;
     protected apiKey: string;
     protected searchParams?: NewsApiOrgSearchParams;
 
     constructor({ apiKey, httpClient, searchParams }: NewsApiOrgAdapterOptions) {
+        super();
         this.apiKey = apiKey;
         this.httpClient = httpClient;
         this.searchParams = searchParams;
     }
 
-    async getArticles(options?: AdapterSearchOptions): Promise<NewsArticleResponse> {
+    protected async fetchArticlesInternal(options?: AdapterSearchOptions): Promise<NewsArticleResponse> {
         // Merge runtime options with constructor search params
         const params = {
             ...this.searchParams,

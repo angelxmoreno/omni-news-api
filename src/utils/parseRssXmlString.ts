@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { ZodError, z } from 'zod';
 import { xml2json } from './xml2json';
 
 // Zod schemas
@@ -8,7 +8,7 @@ const RssItemSchema = z.object({
     pubDate: z.string().optional(),
     description: z.string().optional(),
     author: z.string().optional(),
-    category: z.string().optional(),
+    category: z.union([z.string(), z.array(z.string())]).optional(),
     enclosure: z
         .object({
             url: z.string(),
@@ -62,6 +62,12 @@ export const parseRssXmlString = (xmlString: string): RssFeed => {
 
         return normalizedFeed;
     } catch (err: unknown) {
+        // Let Zod errors bubble up to be properly classified by BaseAdapter
+        if (err instanceof ZodError) {
+            throw err;
+        }
+
+        // For other errors, wrap them with context
         const errorMessage = err instanceof Error ? `RSS parse error: ${err.message}` : 'Unknown RSS parse error';
         throw new Error(errorMessage, { cause: err });
     }

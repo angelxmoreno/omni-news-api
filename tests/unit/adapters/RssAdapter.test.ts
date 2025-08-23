@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { createHttpClient, RssAdapter } from '../../src';
+import { createHttpClient, RssAdapter } from '../../../src';
+import { assertNewsArticleResponse } from '../../utils/assertNewsArticleResponse';
 
 describe('RssAdapter', () => {
     let mockAxios: MockAdapter;
@@ -54,10 +55,10 @@ describe('RssAdapter', () => {
         });
 
         const result = await adapter.getArticles();
-        expect(result.articles.length).toBe(5);
+
+        assertNewsArticleResponse(result, { exactArticles: 5 });
         expect(result.articles[0]?.title).toBe('Article 1');
         expect(result.articles[1]?.title).toBe('Article 2');
-        expect(result.totalCount).toBe(5);
         expect(result.hasMore).toBe(false);
     });
 

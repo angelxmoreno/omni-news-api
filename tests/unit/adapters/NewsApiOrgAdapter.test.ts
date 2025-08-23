@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { createHttpClient, NewsApiOrgAdapter } from '../../src';
+import { createHttpClient, NewsApiOrgAdapter } from '../../../src';
 
 describe('NewsApiOrgAdapter', () => {
     let mockAxios: MockAdapter;

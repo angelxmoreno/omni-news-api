@@ -1,6 +1,6 @@
 import type { AxiosInstance } from 'axios';
-import type { AdapterInterface } from '../core/AdapterInterface';
 import type { AdapterSearchOptions } from '../core/AdapterSearchOptions';
+import { BaseAdapter } from '../core/BaseAdapter';
 import type { NewsArticleInterface } from '../core/NewsArticleInterface';
 import type { NewsArticleResponse } from '../core/NewsArticleResponse';
 import { parseRssXmlString } from '../utils/parseRssXmlString';
@@ -10,16 +10,17 @@ export type RssAdapterOptions = {
     httpClient: AxiosInstance;
 };
 
-export class RssAdapter implements AdapterInterface {
+export class RssAdapter extends BaseAdapter {
     protected rssUrl: string;
     protected httpClient: AxiosInstance;
 
     constructor({ rssUrl, httpClient }: RssAdapterOptions) {
+        super();
         this.rssUrl = rssUrl;
         this.httpClient = httpClient;
     }
 
-    async getArticles(options?: AdapterSearchOptions): Promise<NewsArticleResponse> {
+    protected async fetchArticlesInternal(options?: AdapterSearchOptions): Promise<NewsArticleResponse> {
         const { data } = await this.httpClient.get(this.rssUrl);
         const rssFeed = parseRssXmlString(data);
 
@@ -32,7 +33,7 @@ export class RssAdapter implements AdapterInterface {
                 publishedAt: item.pubDate ? new Date(item.pubDate) : undefined,
                 description: item.description,
                 author: item.author,
-                category: item.category,
+                category: Array.isArray(item.category) ? item.category[0] : item.category,
                 imageUrl: item.enclosure?.url,
             };
 
