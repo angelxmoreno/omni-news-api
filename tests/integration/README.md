@@ -38,7 +38,7 @@ NewsAPI integration tests require an API key:
 ## Test Categories
 
 ### RSS Integration Tests (`RssAdapter.integration.test.ts`)
-- Tests against real RSS feeds from BBC, Reuters, TechCrunch
+- Tests against real RSS feeds from BBC News, NPR News, TechCrunch
 - Validates RSS parser handles real-world XML variations  
 - Tests pagination with actual feed data
 - Tests different RSS formats and versions
