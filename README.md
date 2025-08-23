@@ -10,7 +10,7 @@ OmniNewsAPI is a unified news-fetching service that consolidates multiple news A
 * **Multiple Sources**: Works with RSS feeds, NewsAPI.org, and other news sources.
 * **Unified Output**: Returns a standardized article object with consistent fields.
 * **HTTP Caching**: Built-in caching with TTL and HTTP header support for better performance.
-* **Persistent Storage**: Optional Redis/MongoDB caching via Keyv for production environments.
+* **Persistent Storage**: Multiple storage backends including Redis, MongoDB, SQLite, PostgreSQL and more via Keyv integration.
 * **Smart Aggregation**: Combine articles from multiple sources in parallel.
 * **Extensible**: Easily add new adapters for additional news sources.
 
@@ -42,17 +42,17 @@ const articles = await rssAdapter.getArticles();
 console.log(articles);
 ```
 
-### Using NewsAPI.org
+### Using NewsAPI.org with Persistent Caching
 
 ```ts
 import { NewsApiOrgAdapter, createCacheableHttpClient } from 'omni-news-api';
 import Keyv from '@keyvhq/core';
 
-// Create cached HTTP client for better performance
+// Create cached HTTP client with Redis backend
 const keyv = new Keyv('redis://localhost:6379');
 const httpClient = createCacheableHttpClient({
     keyv,
-    defaultMsTtl: 300000 // 5 minutes
+    cacheOptions: { ttl: 300000 } // 5 minutes
 });
 
 const newsApiAdapter = new NewsApiOrgAdapter({
@@ -68,6 +68,66 @@ const newsApiAdapter = new NewsApiOrgAdapter({
 const articles = await newsApiAdapter.getArticles();
 ```
 
+**Storage Options:**
+The `createCacheableHttpClient` supports multiple storage backends through Keyv:
+
+```ts
+// Redis
+const keyv = new Keyv('redis://localhost:6379');
+
+// MongoDB
+const keyv = new Keyv('mongodb://localhost:27017/cache');
+
+// SQLite
+const keyv = new Keyv('sqlite://path/to/database.sqlite');
+
+// PostgreSQL
+const keyv = new Keyv('postgresql://user:pass@localhost:5432/cache');
+
+// In-memory (development)
+const keyv = new Keyv();
+```
+
+### Advanced Caching Configuration
+
+For more control over caching behavior, use the `cacheOptions` parameter:
+
+```ts
+const httpClient = createCacheableHttpClient({
+    keyv: new Keyv('redis://localhost:6379'),
+    cacheOptions: {
+        ttl: 600000, // 10 minutes cache duration
+        // Additional cache options available - see axios-cache-interceptor docs
+    }
+});
+```
+
+### Storage Configuration Options
+
+Configure Keyv storage behavior with `keyvStorageOptions`:
+
+```ts
+const httpClient = createCacheableHttpClient({
+    keyv: new Keyv('redis://localhost:6379'),
+    keyvStorageOptions: {
+        debug: true // Optional: Enable debug logging for cache storage operations
+    },
+    cacheOptions: {
+        ttl: 300000 // Cache TTL (5 minutes)
+    }
+});
+
+// keyvStorageOptions is optional - can be omitted for default behavior
+const httpClientWithDefaults = createCacheableHttpClient({
+    keyv: new Keyv('redis://localhost:6379'),
+    cacheOptions: {
+        ttl: 300000
+    }
+});
+```
+
+For additional storage configuration options, see the [axios-cache-interceptor-keyv](https://www.npmjs.com/package/axios-cache-interceptor-keyv) documentation.
+
 ### Aggregating Multiple Sources
 
 ```ts
@@ -75,7 +135,10 @@ import { Aggregator, RssAdapter, NewsApiOrgAdapter, createCacheableHttpClient } 
 import Keyv from '@keyvhq/core';
 
 const keyv = new Keyv('redis://localhost:6379');
-const httpClient = createCacheableHttpClient({ keyv, defaultMsTtl: 300000 });
+const httpClient = createCacheableHttpClient({ 
+    keyv, 
+    cacheOptions: { ttl: 300000 } 
+});
 
 const aggregator = new Aggregator([
     new RssAdapter({
