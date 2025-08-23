@@ -1,30 +1,36 @@
 import type Keyv from '@keyvhq/core';
 import axios, { type AxiosInstance, type CreateAxiosDefaults } from 'axios';
-import { setupCache } from 'axios-cache-interceptor';
+import { type CacheOptions, setupCache } from 'axios-cache-interceptor';
+import { createKeyvStorage, type KeyvStorageOptions } from 'axios-cache-interceptor-keyv';
 import { addAxiosDateTransformer } from 'axios-date-transformer';
-import { createKeyvStorage } from './createKeyvStorage';
 
 export interface CreateHttpClientOptions {
     config?: CreateAxiosDefaults;
     instance?: AxiosInstance;
 }
 
-export interface CreateCacheableHttpClientOptions extends CreateHttpClientOptions {
+export type CreateCacheableHttpClientOptions = CreateHttpClientOptions & {
+    cacheOptions?: Omit<CacheOptions, 'storage'>;
     keyv: Keyv;
-    defaultMsTtl?: number;
-}
-
+    keyvStorageOptions?: KeyvStorageOptions;
+};
 export const createHttpClient = ({ config, instance }: CreateHttpClientOptions = {}): AxiosInstance => {
     const axiosInstance = instance || axios.create(config);
 
     return addAxiosDateTransformer(axiosInstance);
 };
 
-export const createCacheableHttpClient = (options: CreateCacheableHttpClientOptions) => {
-    const { config, instance, keyv, defaultMsTtl } = options;
+export const createCacheableHttpClient = ({
+    config,
+    instance,
+    keyv,
+    cacheOptions,
+    keyvStorageOptions,
+}: CreateCacheableHttpClientOptions) => {
     const client = createHttpClient({ config, instance });
-    return setupCache(client, {
-        storage: createKeyvStorage(keyv),
-        ttl: defaultMsTtl,
-    });
+    const setupCacheOptions: CacheOptions = {
+        storage: createKeyvStorage(keyv, keyvStorageOptions),
+        ...cacheOptions,
+    };
+    return setupCache(client, setupCacheOptions);
 };

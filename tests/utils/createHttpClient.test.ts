@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'bun:test';
 import Keyv from '@keyvhq/core';
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
-import { createCacheableHttpClient, createHttpClient } from '../../src/utils/createHttpClient';
+import { createCacheableHttpClient, createHttpClient } from '../../src';
 
 describe('createHttpClient', () => {
     it('creates a basic HTTP client without caching', () => {
@@ -65,7 +65,7 @@ describe('createCacheableHttpClient', () => {
     it('creates a cacheable HTTP client with Keyv storage', () => {
         const client = createCacheableHttpClient({
             keyv,
-            defaultMsTtl: 60000,
+            cacheOptions: { ttl: 60000 },
         }) as CacheableAxiosInstance;
 
         expect(client).toBeDefined();
@@ -87,11 +87,51 @@ describe('createCacheableHttpClient', () => {
         const client = createCacheableHttpClient({
             keyv,
             instance: existingInstance,
-            defaultMsTtl: 45000,
+            cacheOptions: { ttl: 45000 },
         }) as CacheableAxiosInstance;
 
         expect(client.defaults.timeout).toBe(3000);
         expect(client.storage).toBeDefined();
         expect(client.defaults.cache.ttl).toBe(45000);
+    });
+
+    it('configures cache options correctly', () => {
+        const client = createCacheableHttpClient({
+            keyv,
+            cacheOptions: {
+                ttl: 120000,
+            },
+        }) as CacheableAxiosInstance;
+
+        expect(client.defaults.cache.ttl).toBe(120000);
+    });
+
+    it('accepts keyv storage options', () => {
+        const client = createCacheableHttpClient({
+            keyv,
+            keyvStorageOptions: {
+                debug: true,
+            },
+        }) as CacheableAxiosInstance;
+
+        expect(client).toBeDefined();
+        expect(client.storage).toBeDefined();
+        // Storage options are passed to createKeyvStorage, can't directly test here
+        // but ensuring no errors occur during creation
+    });
+
+    it('combines cache options and keyv storage options', () => {
+        const client = createCacheableHttpClient({
+            keyv,
+            cacheOptions: {
+                ttl: 180000,
+            },
+            keyvStorageOptions: {
+                debug: false,
+            },
+        }) as CacheableAxiosInstance;
+
+        expect(client.defaults.cache.ttl).toBe(180000);
+        expect(client.storage).toBeDefined();
     });
 });

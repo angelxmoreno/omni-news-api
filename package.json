@@ -40,6 +40,7 @@
         "@keyvhq/core": "^2.1.7",
         "axios": "^1.11.0",
         "axios-cache-interceptor": "^1.8.2",
+        "axios-cache-interceptor-keyv": "^1.1.0",
         "axios-date-transformer": "^1.2.1",
         "fast-xml-parser": "^5.2.5",
         "pino": "^9.9.0",
