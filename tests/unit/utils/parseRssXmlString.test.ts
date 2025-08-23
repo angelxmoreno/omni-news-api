@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { parseRssXmlString, type RssFeed } from '../../src/utils/parseRssXmlString';
+import { parseRssXmlString, type RssFeed } from '../../../src/utils/parseRssXmlString';
 
 describe('parseRssXmlString', () => {
     it('parses a single-item RSS feed correctly', () => {

@@ -4,6 +4,9 @@ export * from './adapters/RssAdapter';
 export type { AdapterInterface } from './core/AdapterInterface';
 export type { AdapterSearchOptions } from './core/AdapterSearchOptions';
 export { Aggregator } from './core/Aggregator';
+export { BaseAdapter } from './core/BaseAdapter';
+// Export error classes
+export * from './core/errors';
 export type { NewsArticleInterface } from './core/NewsArticleInterface';
 export type { NewsArticleResponse } from './core/NewsArticleResponse';
 

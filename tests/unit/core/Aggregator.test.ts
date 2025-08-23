@@ -1,8 +1,8 @@
 import { describe, expect, it, jest } from 'bun:test';
-import type { AdapterInterface } from '../../src/core/AdapterInterface';
-import { Aggregator } from '../../src/core/Aggregator';
-import type { NewsArticleInterface } from '../../src/core/NewsArticleInterface';
-import type { NewsArticleResponse } from '../../src/core/NewsArticleResponse';
+import type { AdapterInterface } from '../../../src/core/AdapterInterface';
+import { Aggregator } from '../../../src/core/Aggregator';
+import type { NewsArticleInterface } from '../../../src/core/NewsArticleInterface';
+import type { NewsArticleResponse } from '../../../src/core/NewsArticleResponse';
 
 describe('Aggregator', () => {
     const mockArticle1: NewsArticleInterface = {

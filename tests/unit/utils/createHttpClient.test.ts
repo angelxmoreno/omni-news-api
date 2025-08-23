@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'bun:test';
 import Keyv from '@keyvhq/core';
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
-import { createCacheableHttpClient, createHttpClient } from '../../src';
+import { createCacheableHttpClient, createHttpClient } from '../../../src';
 
 describe('createHttpClient', () => {
     it('creates a basic HTTP client without caching', () => {
