@@ -1,5 +1,5 @@
 import { expect } from 'bun:test';
-import type { NewsArticleInterface, NewsArticleResponse } from '../../src';
+import type { NewsArticleInterface, NewsArticleResponse } from '../../../src';
 
 export interface NewsArticleResponseAssertionOptions {
     /** Expected minimum number of articles (default: 0) */

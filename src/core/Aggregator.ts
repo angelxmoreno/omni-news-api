@@ -3,7 +3,7 @@ import type { AdapterSearchOptions } from './AdapterSearchOptions';
 import type { NewsArticleResponse } from './NewsArticleResponse';
 
 export class Aggregator {
-    protected adapters: AdapterInterface[];
+    public readonly adapters: AdapterInterface[];
 
     constructor(adapters: AdapterInterface[]) {
         this.adapters = adapters;
