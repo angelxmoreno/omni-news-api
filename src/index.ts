@@ -9,5 +9,5 @@ export { BaseAdapter } from './core/BaseAdapter';
 export * from './core/errors';
 export type { NewsArticleInterface } from './core/NewsArticleInterface';
 export type { NewsArticleResponse } from './core/NewsArticleResponse';
-
+export * from './utils/createAggregatorFromOpml';
 export * from './utils/createHttpClient';

@@ -5,6 +5,11 @@ const defaultParser = new XMLParser({
     attributeNamePrefix: '@_',
 });
 
+export const noPrefixParser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: '',
+});
+
 export const xml2json = <T = unknown>(xmlString: string, parser = defaultParser): T => {
     try {
         if (XMLValidator.validate(xmlString) !== true) {

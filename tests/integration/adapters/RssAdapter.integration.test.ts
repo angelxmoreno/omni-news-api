@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { createHttpClient, NetworkError, ParseError, RssAdapter } from '../../../src';
-import { assertNewsArticleResponse, assertNonOverlappingResults } from '../../utils/assertNewsArticleResponse';
+import { assertNewsArticleResponse, assertNonOverlappingResults } from '../../unit/utils/assertNewsArticleResponse';
 
 describe('RssAdapter - Integration Tests', () => {
     const httpClient = createHttpClient();

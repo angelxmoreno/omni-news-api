@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { createHttpClient, RssAdapter } from '../../../src';
-import { assertNewsArticleResponse } from '../../utils/assertNewsArticleResponse';
+import { assertNewsArticleResponse } from '../utils/assertNewsArticleResponse';
 
 describe('RssAdapter', () => {
     let mockAxios: MockAdapter;

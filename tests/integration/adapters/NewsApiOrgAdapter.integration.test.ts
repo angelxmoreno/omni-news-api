@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { createHttpClient, NetworkError, NewsApiOrgAdapter } from '../../../src';
-import { assertNewsArticleResponse, assertNonOverlappingResults } from '../../utils/assertNewsArticleResponse';
+import { assertNewsArticleResponse, assertNonOverlappingResults } from '../../unit/utils/assertNewsArticleResponse';
 
 describe('NewsApiOrgAdapter - Integration Tests', () => {
     const apiKey = process.env.NEWSAPI_API_KEY;
